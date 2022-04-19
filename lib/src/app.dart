@@ -23,10 +23,10 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Auth0 Demo',
+      title: 'Login IdentityServer',
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Auth0 Demo'),
+          title: const Text('Login IdentityServer'),
         ),
         body: Center(
           child: isBusy

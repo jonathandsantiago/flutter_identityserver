@@ -34,7 +34,7 @@ A arquitetura do projeto esta organizada no seguinte formato:
     
 ### Configuração Android
 * <b>Build</b>: Em `android -> app -> build.gradle`
-    * Insira o id da aplicação em `applicationId` no meu caso coloquei o nome `appflutteridentityserver.com`, lembrando que o mesmo deverá estar cadastrada na aplicação identity server com o mesmo nome.
+    * Insira o id da aplicação em `applicationId`, lembrando que o mesmo deverá estar cadastrada na aplicação identity server (SSO) com o mesmo nome.
     * Caso for testar em uma versão mais antiga do android altere o `minSdkVersion`
     no meu caso alterei para `18`;
     * Insira o 
@@ -43,7 +43,7 @@ A arquitetura do projeto esta organizada no seguinte formato:
                     'appAuthRedirectScheme': 'appflutteridentityserver.com'
             ]
     ```
-    com o mesmo nome informado no `applicationId`;
+    substitutindo o `appAuthRedirectScheme` do exemplo pelo `applicationId` cadastrado no SSO;
 * <b>AndroidManifest</b>: Em `android -> app -> src -> main -> AndroidManifest.xml` adicione o seguinte treixo em `application`: 
     ```
         <queries>
