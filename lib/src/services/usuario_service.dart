@@ -58,6 +58,7 @@ class UsuarioService {
 
         await secureStorage.write(
             key: 'refresh_token', value: result.refreshToken);
+        await secureStorage.write(key: 'idToken', value: result.idToken!);
         return usuario;
       }
     } on Exception catch (e, s) {
@@ -89,7 +90,20 @@ class UsuarioService {
   }
 
   Future<void> logout() async {
-    await secureStorage.delete(key: 'refresh_token');
+    try {
+      final String? idToken = await secureStorage.read(key: 'idToken');
+      if (idToken != null) {
+        await _appAuth.endSession(EndSessionRequest(
+            idTokenHint: idToken,
+            postLogoutRedirectUrl: AUTH_REDIRECT_URI,
+            serviceConfiguration: _serviceConfiguration));
+      }
+      await secureStorage.delete(key: 'refresh_token');
+      await secureStorage.delete(key: 'idToken');
+    } on Exception catch (e, s) {
+      debugPrint('error on refresh token: $e - stack: $s');
+      await logout();
+    }
   }
 
   Future<UserAuth?> init(String storedRefreshToken) async {
@@ -98,6 +112,8 @@ class UsuarioService {
         AUTH_CLIENT_ID,
         AUTH_REDIRECT_URI,
         issuer: AUTH_ISSUER,
+        clientSecret: AUTH_SECRET,
+        scopes: _scopes,
         refreshToken: storedRefreshToken,
       ));
 
@@ -108,6 +124,7 @@ class UsuarioService {
         usuario.refreshToken = response.refreshToken!;
         usuario.profile = await getUserInfo(usuario.accessToken!);
 
+        await secureStorage.write(key: 'idToken ', value: response.idToken);
         await secureStorage.write(
             key: 'refresh_token', value: response.refreshToken);
 
